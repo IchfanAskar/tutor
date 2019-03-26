@@ -23,7 +23,9 @@ public class Movie {
     @SerializedName("vote_averge")
     private double voteAverage;
 
-    public Movie() {
+    public Movie(String title, String releaseDate) {
+        this.title = title ;
+        this.releaseDate = releaseDate;
 
     }
 

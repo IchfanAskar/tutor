@@ -3,6 +3,8 @@ package com.example.mvvn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,28 +20,35 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private RecyclerView movieRV;
+    private RecycleViewAdapter movieAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        movieRV = findViewById(R.id.card_view);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        movieRV.setLayoutManager(mLayoutManager);
+
 
         ViewModelProviderFactory factory = InjectorUtils.providerViewModelProviderFactory();
         MovieViewModel viewModel = ViewModelProviders.of(this, factory).get(MovieViewModel.class);
 
         viewModel.getNowPlayingMovies().observe(this, movies -> {
-            for (Movie movie : movies){
-                Log.d(TAG, movie.getTitle());
-                Log.d(TAG, movie.getReleaseDate());
-            }
+            movieAdapter = new RecycleViewAdapter(movies, this);
+            movieRV.setAdapter(movieAdapter);
         });
+
+
 
         viewModel.getShowLoading().observe(this, aBoolean -> showLoading(aBoolean));
     }
 
     private void showLoading(Boolean aBoolean) {
-        if(aBoolean){
+        if (aBoolean) {
             Log.d(TAG, "show loading");
-        }else {
+        } else {
             Log.d(TAG, "hide loading");
         }
     }
